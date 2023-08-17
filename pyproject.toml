@@ -1,0 +1,26 @@
+# poetry
+[tool.poetry]
+name = "structured-log-alerting"
+version = "0.1.0"
+description = ""
+authors = ["Rachel King <rachel.b.king@gmail.com>"]
+readme = "README.md"
+packages = [{include = "structured_log_alerting"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+mypy = "^1.5.0"
+
+[tool.poetry.scripts]
+main = "structured_log_alerting.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# pytest
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
