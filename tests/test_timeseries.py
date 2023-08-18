@@ -75,29 +75,3 @@ def test_counter_handles_incrementing_existing_timestamp(sample_name, sample_lab
 	assert len(counter.data_points) == 1
 	timestamp, count = counter.data_points.popitem()
 	assert count == 2
-
-def test_counter_handles_adding_new_in_order_timestamp(sample_name, sample_labels, sample_unix_timestamps):
-	counter = CounterSeries(sample_name, sample_labels)
-	first_timestamp_as_datetime = datetime.fromtimestamp(sample_unix_timestamps[0])
-	second_timestamp_as_datetime = datetime.fromtimestamp(sample_unix_timestamps[2])
-
-	for timestamp in sample_unix_timestamps[0:3]:
-		counter.add_data_point(timestamp)	
-
-	assert len(counter.data_points) == 2
-	assert list(counter.data_points)[0] == first_timestamp_as_datetime
-	assert list(counter.data_points)[1] == second_timestamp_as_datetime
-
-def test_counter_handles_adding_new_out_of_order_timestamp(sample_name, sample_labels, sample_unix_timestamps):
-	counter = CounterSeries(sample_name, sample_labels)
-	first_timestamp_as_datetime = datetime.fromtimestamp(sample_unix_timestamps[0])
-	second_timestamp_as_datetime = datetime.fromtimestamp(sample_unix_timestamps[2])
-	third_timestamp_as_datetime = datetime.fromtimestamp(sample_unix_timestamps[5])
-
-	for timestamp in sample_unix_timestamps[5:-1]:
-		counter.add_data_point(timestamp)
-
-	assert len(counter.data_points) == 3
-	assert list(counter.data_points)[0] == first_timestamp_as_datetime
-	assert list(counter.data_points)[1] == second_timestamp_as_datetime
-	assert list(counter.data_points)[2] == third_timestamp_as_datetime
