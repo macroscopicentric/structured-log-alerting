@@ -28,7 +28,7 @@ def main():
 				metric_name, parsed_log_line = parser.parse_nginx_log_line(line)
 				counters_collection.add_or_update_series(metric_name, parsed_log_line)
 				# print(f"metric: {metric_name}")
-				# print(counters_collection.counter_series[metric_name].data_points)
+				# print(counters_collection.series[metric_name].data_points)
 			except ValueError as e:
 				next
 
