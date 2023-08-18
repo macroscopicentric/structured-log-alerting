@@ -10,8 +10,16 @@ poetry install
 
 ## Usage
 
+## Development
+
 To run the tests:
 
 ```sh
 poetry run pytest
+```
+
+To run mypy:
+
+```sh
+poetry run mypy .
 ```
