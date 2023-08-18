@@ -13,11 +13,6 @@ class TimeSeries(ABC):
 	name : str
 		The short name of the metric.
 
-	max_length : int
-		The maximum length of the data points iterable.
-		self.data_points will occasionally go above max_length
-		(see #truncate_if_needed below).
-
 	labels : dict of str: str
 		A dictionary of key/value label pairs to be used to aggregate metrics.
 	"""
