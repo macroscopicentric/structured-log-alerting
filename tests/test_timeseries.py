@@ -75,3 +75,6 @@ def test_counter_handles_incrementing_existing_timestamp(sample_name, sample_lab
 	assert len(counter.data_points) == 1
 	timestamp, count = counter.data_points.popitem()
 	assert count == 2
+
+def test_counter_returns_count_since_time():
+	pass

@@ -24,11 +24,11 @@ class TimeSeries(ABC):
 		self.name = name
 		self.labels = labels
 
-		self.data_points: dict[datetime, int] = SortedOrderedDict(max_length)
+		self.data_points: SortedOrderedDict[datetime, int] = SortedOrderedDict(max_length)
 
 	@abstractmethod
-	def add_data_point(self, data_point):
-		pass
+	def add_data_point(self, data_point) -> SortedOrderedDict:
+		return self.data_points
 
 class CounterSeries(TimeSeries):
 	"""
@@ -40,15 +40,15 @@ class CounterSeries(TimeSeries):
 
 	kind = "counter"
 
-	def __init__(self, name: str, labels: dict, max_length: int = 10):
+	def __init__(self, name: str, labels: dict, max_length: int = 100) -> None:
 		self.name = name
 		self.max_length = max_length
 		self.labels = labels
 		self.data_points = SortedOrderedDict(max_length)
 
-	def add_data_point(self, timestamp: int, count: int = 1):
+	def add_data_point(self, timestamp: str, count: int = 1) -> SortedOrderedDict:
 		try:
-			converted_to_datetime = datetime.fromtimestamp(timestamp)
+			converted_to_datetime = datetime.fromtimestamp(int(timestamp))
 			if converted_to_datetime in self.data_points:
 				self.data_points[converted_to_datetime] += 1
 			else:
@@ -57,19 +57,23 @@ class CounterSeries(TimeSeries):
 		# this does not feel like it lines up with the possible errors
 		# listed in the docs for 3.11 but what do I know (I was able to
 		# replicate these two specific errors via the python repl).
+		# this will also catch a string timestamp that cannot be turned
+		# into an int (which is a ValueError).
 		except (OSError, ValueError) as e:
 			print(f"Invalid timestamp, failed to add data point: {timestamp}")
 
 		return self.data_points
 
-	def total_count_since(self, timestamp: datetime):
+	def total_count_since(self, since: datetime, until: datetime = datetime.now()) -> int:
 		"""
 		Find the total count of events since the given timestamp.
 
 		Parameters
 		----------
-		timestamp : datetime
-			The earliest bound (inclusive) of event timestamps.
+		since : datetime
+			The timestamp (inclusive) to use as the lower bound when querying
+		until : datetime
+			The timestamp (inclusive) to use as the upper bound when querying
 
 		Returns
 		-------

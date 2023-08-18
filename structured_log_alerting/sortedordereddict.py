@@ -13,14 +13,14 @@ class SortedOrderedDict(OrderedDict):
 		The maximum length the SortedOrderedDict may grow to (measured
 		like a regular dict in keys and not full size).
 	"""
-	def __init__(self, max_len: int,  /, *args, **kwargs):
+	def __init__(self, max_len: int,  /, *args, **kwargs) -> None:
 		# TODO: it might be nice if this class supported descending
 		# order as an alternative, but I don't need it for this work
 		# so I'm going to skip implementing it for now.
 		self.max_len = max_len
 		super().__init__(*args, **kwargs)
 
-	def __setitem__(self, key, value):
+	def __setitem__(self, key, value) -> None:
 		"""
 		Override default __setitem__ to ensure all new keys get added
 		in ascending order and that the dict respects max_length at the
