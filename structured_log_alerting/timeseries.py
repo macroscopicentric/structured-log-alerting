@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from structured_log_alerting.sortedordereddict import SortedOrderedDict
 
@@ -12,15 +12,17 @@ class TimeSeries(ABC):
 	----------
 	name : str
 		The short name of the metric.
-
 	labels : dict of str: str
 		A dictionary of key/value label pairs to be used to aggregate metrics.
+	max_length : int, optional
+		The max_length of the TimeSeries' data_points for individual
+		data point storage. Defaults to 10.
 	"""
 
 	kind: None | str = None
 
 	@abstractmethod
-	def __init__(self, name: str, labels: dict, max_length: int = 10):
+	def __init__(self, name: str, labels: dict, max_length: int = 10) -> None:
 		self.name = name
 		self.labels = labels
 
@@ -33,7 +35,7 @@ class TimeSeries(ABC):
 class CounterSeries(TimeSeries):
 	"""
 	Non-abstract counter metric series class subclassed from the ABC TimeSeries.
-	Counters here are non-monotonic.
+	Counters here are monotonically increasing.
 
 	See TimeSeries for attribute descriptions.
 	"""
@@ -46,38 +48,57 @@ class CounterSeries(TimeSeries):
 		self.labels = labels
 		self.data_points = SortedOrderedDict(max_length)
 
-	def add_data_point(self, timestamp: str, count: int = 1) -> SortedOrderedDict:
-		try:
-			converted_to_datetime = datetime.fromtimestamp(int(timestamp))
-			if converted_to_datetime in self.data_points:
-				self.data_points[converted_to_datetime] += 1
-			else:
-				self.data_points[converted_to_datetime] = 1
+	def add_data_point(self, timestamp: datetime, count: int = 1) -> SortedOrderedDict:
+		"""
+		Add a data point to self.data_points
 
-		# this does not feel like it lines up with the possible errors
-		# listed in the docs for 3.11 but what do I know (I was able to
-		# replicate these two specific errors via the python repl).
-		# this will also catch a string timestamp that cannot be turned
-		# into an int (which is a ValueError).
-		except (OSError, ValueError) as e:
-			print(f"Invalid timestamp, failed to add data point: {timestamp}")
+		Parameters
+		----------
+		timestamp : datetime
+			The timestamp of the data point to add to the collection.
+		count : int, optional
+			The count to increment the data point by (defaults to 1).
+
+		Returns
+		-------
+		SortedOrderedDict
+			self.data_points
+		"""
+		if timestamp in self.data_points:
+			self.data_points[timestamp] += count
+		else:
+			self.data_points[timestamp] = count
 
 		return self.data_points
 
-	def total_count_since(self, since: datetime, until: datetime = datetime.now()) -> int:
+	def total_count_since(self, since_number_of_seconds: int, present_time: datetime = datetime.now()) -> int:
 		"""
 		Find the total count of events since the given timestamp.
 
 		Parameters
 		----------
-		since : datetime
-			The timestamp (inclusive) to use as the lower bound when querying
-		until : datetime
-			The timestamp (inclusive) to use as the upper bound when querying
+		since_number_of_seconds : int
+			The number of seconds into the past we should look for the
+			count (exclusive of end of range).
+		present_time : datetime
+			The current time that should be considered the end bound
+			(inclusive).
 
 		Returns
 		-------
 		int
 			The total count of events.
 		"""
-		pass
+		now = present_time
+		past_time = now - timedelta(seconds=since_number_of_seconds)
+
+		count = 0
+
+		# i think there's probably a neat way to do this with pandas
+		# but i looked at the docs and haven't figured out what i might
+		# need so we're punting on that for now.
+		for key, value in self.data_points.items():
+			if key > past_time and key <= now:
+				count += value
+
+		return count

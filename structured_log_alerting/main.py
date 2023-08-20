@@ -1,5 +1,6 @@
 import argparse
 import csv
+from datetime import datetime
 
 from structured_log_alerting.metricscollection import CountersCollection
 from structured_log_alerting.parser import Parser
@@ -21,15 +22,27 @@ def main():
 
 		counters_collection = CountersCollection()
 		parser = Parser(reader.fieldnames)
+		current_time = datetime.min
 
 		for line in reader:
-			# print(reader.line_num)
 			try:
-				metric_name, parsed_log_line = parser.parse_nginx_log_line(line)
+				metric_name, parsed_log_line = parser.parse_log_line(line)
+				# print(metric_name)
+				# print(parsed_log_line)
 				counters_collection.add_or_update_series(metric_name, parsed_log_line)
-				# print(f"metric: {metric_name}")
-				# print(counters_collection.series[metric_name].data_points)
+				log_timestamp = parser.parse_timestamp(line)
+
+				if log_timestamp > current_time:
+					current_time = log_timestamp
+
+				# if something is finally greater than or equal to 10 away from current_time,
+				# do the alertmanager summaries
+
+				# last_ten_second_count = counters_collection.total_count_since(10, current_time, '404')
+				# if last_ten_second_count > 0:
+				# 	print(f"current total 400s count in the last ten seconds: {last_ten_second_count}")
 			except ValueError as e:
+				print(f"Problem log line at {reader.line_num}")
 				next
 
 if __name__ == "__main__":

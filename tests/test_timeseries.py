@@ -18,18 +18,18 @@ def sample_labels():
 	}
 
 @pytest.fixture
-def sample_unix_timestamps():
+def sample_timestamps():
 	return [
-		1549573863,
-		1549573863,
-		1549573864,
-		1549573864,
-		1549573864,
-		1549573865,
-		1549573865,
-		1549573864,
-		1549573863,
-		1549573865	
+		datetime(2019, 2, 7, 16, 11, 3),
+		datetime(2019, 2, 7, 16, 11, 3),
+		datetime(2019, 2, 7, 16, 11, 4),
+		datetime(2019, 2, 7, 16, 11, 4),
+		datetime(2019, 2, 7, 16, 11, 4),
+		datetime(2019, 2, 7, 16, 11, 5),
+		datetime(2019, 2, 7, 16, 11, 5),
+		datetime(2019, 2, 7, 16, 11, 4),
+		datetime(2019, 2, 7, 16, 11, 3),
+		datetime(2019, 2, 7, 16, 11, 5)	
 	]
 
 def test_counter_initializes_correctly(sample_name, sample_labels):
@@ -40,34 +40,16 @@ def test_counter_initializes_correctly(sample_name, sample_labels):
 	assert counter.labels == sample_labels
 	assert len(counter.data_points) == 0
 
-def test_too_long_timestamp_handles_oserror(capsys, sample_name, sample_labels):
-	invalid_timestamp = 1111111111111111111
+def test_counter_handles_first_timestamp_insertion(sample_name, sample_labels, sample_timestamps):
 	counter = CounterSeries(sample_name, sample_labels)
-	counter.add_data_point(invalid_timestamp)
-	out, err = capsys.readouterr()
-
-	assert out == f"Invalid timestamp, failed to add data point: {invalid_timestamp}\n"
-	assert len(counter.data_points) == 0
-
-def test_invalid_timestamp_handles_valueerror(capsys, sample_name, sample_labels):
-	invalid_timestamp = 33333333333333333
-	counter = CounterSeries(sample_name, sample_labels)
-	counter.add_data_point(invalid_timestamp)
-	out, err = capsys.readouterr()
-
-	assert out == f"Invalid timestamp, failed to add data point: {invalid_timestamp}\n"
-	assert len(counter.data_points) == 0
-
-def test_counter_handles_first_timestamp_insertion(sample_name, sample_labels, sample_unix_timestamps):
-	counter = CounterSeries(sample_name, sample_labels)
-	counter.add_data_point(sample_unix_timestamps[0])
+	counter.add_data_point(sample_timestamps[0])
 
 	assert len(counter.data_points) == 1
 	timestamp, count = counter.data_points.popitem()
 	assert count == 1
 
-def test_counter_handles_incrementing_existing_timestamp(sample_name, sample_labels, sample_unix_timestamps):
-	first_unix_timestamp = sample_unix_timestamps[0]
+def test_counter_handles_incrementing_existing_timestamp(sample_name, sample_labels, sample_timestamps):
+	first_unix_timestamp = sample_timestamps[0]
 	counter = CounterSeries(sample_name, sample_labels)	
 	counter.add_data_point(first_unix_timestamp)
 	counter.add_data_point(first_unix_timestamp)
@@ -76,5 +58,12 @@ def test_counter_handles_incrementing_existing_timestamp(sample_name, sample_lab
 	timestamp, count = counter.data_points.popitem()
 	assert count == 2
 
-def test_counter_returns_count_since_time():
-	pass
+def test_counter_returns_count_since_time(sample_name, sample_labels, sample_timestamps):
+	counter = CounterSeries(sample_name, sample_labels)
+	current_time = datetime(2019, 2, 7, 16, 11, 6)
+	for timestamp in sample_timestamps:
+		counter.add_data_point(timestamp)
+
+	count = counter.total_count_since(10, current_time)
+
+	assert count == len(sample_timestamps)

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Parser():
 	"""
 	Parser to parse out of different types of log files. Currently only
@@ -7,7 +9,10 @@ class Parser():
 	def __init__(self, valid_fields: list[str]) -> None:
 		self.valid_fields: set[str] = set(valid_fields)
 
-	def parse_nginx_log_line(self, log_line: dict[str, str]) -> list[str, dict[str, str]]:
+	def parse_log_line(self, log_line: dict[str, str]) -> list[str, dict[str, str]]:
+		"""
+		TODO: docstring this
+		"""
 		try:
 			http_verb, endpoint, http_version = log_line['request'].split(' ')
 			section = endpoint.split('/')[1]
@@ -23,6 +28,7 @@ class Parser():
 
 			# copy and add our extra fields
 			parsed_log_line = log_line.copy()
+			parsed_log_line['date'] = self.parse_timestamp(log_line)
 			parsed_log_line['http_verb'] = http_verb
 			parsed_log_line['section'] = f"/{section}"
 			parsed_log_line['endpoint'] = endpoint
@@ -39,3 +45,34 @@ class Parser():
 		except (AttributeError, ValueError) as e:
 			print(f"Malformed log line, skipping: {log_line}") 
 			raise ValueError
+
+	def parse_timestamp(self, log_line: dict[str, str]) -> datetime:
+		"""
+		A helper method to parse out just the timestamp of a log line
+		so we can use it in multiple places.
+
+		Parameters
+		----------
+		log_line : dict of str: str
+			The full log line.
+
+		Returns
+		-------
+		datetime
+			The timestamp, converted from UNIX epoch.
+		"""
+		try:
+			timestamp = log_line['date']
+			converted_to_datetime = datetime.fromtimestamp(int(timestamp))
+			return converted_to_datetime
+
+		# this does not feel like it lines up with the possible errors
+		# listed in the docs for 3.11 but what do I know (I was able to
+		# replicate these two specific errors via the python repl).
+		# this will also catch a string timestamp that cannot be turned
+		# into an int (which is a ValueError).
+		except (OSError, ValueError) as e:
+			print(f"Invalid timestamp, failed to parse: {timestamp}")
+
+
+

@@ -13,11 +13,26 @@ def api_200_parsed_log():
 		'remotehost': '10.0.0.1',
 		'rfc931': '-',
 		'authuser': 'apache',
-		'date': '1549574283',
-		'request': 'GET /api/user HTTP/1.0',
+		'date': datetime(2019, 2, 7, 16, 18, 58),
+		'request': 'POST /api/user HTTP/1.0',
 		'status': '200',
-		'bytes': '1234',
-		'http_verb': 'GET',
+		'bytes': '1307',
+		'http_verb': 'POST',
+		'section': '/api',
+		'endpoint': '/api/user'
+	}
+
+@pytest.fixture
+def api_200_newer_parsed_log():
+	return {
+		'remotehost': '10.0.0.1',
+		'rfc931': '-',
+		'authuser': 'apache',
+		'date': datetime(2019, 2, 7, 16, 18, 59),
+		'request': 'POST /api/user HTTP/1.0',
+		'status': '200',
+		'bytes': '1307',
+		'http_verb': 'POST',
 		'section': '/api',
 		'endpoint': '/api/user'
 	}
@@ -29,17 +44,17 @@ def report_200_metric_name():
 @pytest.fixture
 def report_200_parsed_log():
 	return {
-		'remotehost': '10.0.0.3',
+		'remotehost': '10.0.0.1',
 		'rfc931': '-',
 		'authuser': 'apache',
-		'date': '1549574282',
+		'date': datetime(2019, 2, 7, 16, 18, 58),
 		'request': 'POST /report HTTP/1.0',
 		'status': '200',
-		'bytes': '1136',
+		'bytes': '1307',
 		'http_verb': 'POST',
 		'section': '/report',
 		'endpoint': '/report'
-	}	
+	}
 
 def test_counters_collection_adds_new_series(api_200_metric_name, api_200_parsed_log):
 	counters_collection = CountersCollection()
@@ -53,7 +68,7 @@ def test_counters_collection_updates_existing_series(api_200_metric_name, api_20
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
 
-	timestamp = datetime.fromtimestamp(int(api_200_parsed_log['date']))
+	timestamp = api_200_parsed_log['date']
 
 	assert len(counters_collection.series) == 1
 	# this one's a little reachy but this is the most top-level thing
@@ -69,5 +84,26 @@ def test_counters_colletion_tracks_sections(api_200_metric_name, api_200_parsed_
 	assert api_200_parsed_log['section'] in counters_collection.sections
 	assert report_200_parsed_log['section'] in counters_collection.sections
 
-def test_counters_collection_collects_all_metrics_since_time():
-	pass
+def test_counters_collection_collects_all_metrics_since_time(api_200_metric_name, api_200_parsed_log, report_200_metric_name, report_200_parsed_log):
+	counters_collection = CountersCollection()
+	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
+	counters_collection.add_or_update_series(report_200_metric_name, report_200_parsed_log)
+	count = counters_collection.total_count_since(5, datetime(2019, 2, 7, 16, 18, 59))
+
+	assert count == 2
+
+def test_counters_collection_total_since_time_respects_metric_name_filtering(api_200_metric_name, api_200_parsed_log, report_200_metric_name, report_200_parsed_log):
+	counters_collection = CountersCollection()
+	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
+	counters_collection.add_or_update_series(report_200_metric_name, report_200_parsed_log)
+	count = counters_collection.total_count_since(5, datetime(2019, 2, 7, 16, 18, 59), 'api')
+
+	assert count == 1
+
+def test_counters_collection_total_since_time_respects_exclusive_lower_bound(api_200_metric_name, api_200_parsed_log, api_200_newer_parsed_log):
+	counters_collection = CountersCollection()
+	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
+	counters_collection.add_or_update_series(api_200_metric_name, api_200_newer_parsed_log)
+	count = counters_collection.total_count_since(1, datetime(2019, 2, 7, 16, 18, 59))
+
+	assert count == 1

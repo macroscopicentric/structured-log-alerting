@@ -58,32 +58,51 @@ class CountersCollection(MetricsCollection):
 		"""
 		Finds and updates or creates the appropriate counter series
 		and adds the new log file information as a new metric.
+
+		Parameters
+		----------
+		counter_name : str
+			The counter series to find or add.
+		parsed_log_file : dict
+			The pre-parsed log file as a dictionary.
+
+		Returns
+		-------
+		dict of str, CounterSeries
+			self.series
 		"""
 		if counter_name not in self.series:
 			self._add_series(counter_name, parsed_log_file)
 
-		timestamp = parsed_log_file['date']
-		self.series[counter_name].add_data_point(timestamp)
+		self.series[counter_name].add_data_point(parsed_log_file['date'])
 
 		return self.series
 
-	def total_count_since(self, metrics_namespace: str, since: datetime, until: datetime = datetime.now()) -> int:
+	def total_count_since(self, since_number_of_seconds: int, until: datetime = datetime.now(), metrics_namespace: str = '') -> int:
 		"""
 		Find all counter series matching a specific metric namespace
 		since a specific time.
 
 		Parameters
 		----------
-		metrics_namespace : str
-			The parent namespace in which to find all metrics.
-		since : datetime
-			The timestamp (inclusive) to use as the lower bound when querying
-		until : datetime
-			The timestamp (inclusive) to use as the upper bound when querying
+		since_number_of_seconds : datetime
+			The timestamp (exclusive) to use as the lower bound when querying
+		until : datetime, optional
+			The timestamp (inclusive) to use as the upper bound when
+			querying. Defaults to the internal clock's datetime.now()
+			when left out.
+		metrics_namespace : str, optional
+			The parent namespace in which to find all metrics. Defaults
+			to all metrics when left out.
 
 		Returns
 		-------
 		int
 			The total count of events.
 		"""
-		pass
+		count = 0
+		for series_name, series in self.series.items():
+			if series_name.find(metrics_namespace) >= 0:
+				count += series.total_count_since(since_number_of_seconds, until)
+
+		return count
