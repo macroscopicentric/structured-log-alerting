@@ -71,25 +71,25 @@ class CounterSeries(TimeSeries):
 
 		return self.data_points
 
-	def total_count_since(self, since_number_of_seconds: int, present_time: datetime = datetime.now()) -> int:
+	def total_count_since(self, current_time: datetime = datetime.now(), since_number_of_seconds: int = 10) -> int:
 		"""
 		Find the total count of events since the given timestamp.
 
 		Parameters
 		----------
-		since_number_of_seconds : int
-			The number of seconds into the past we should look for the
-			count (exclusive of end of range).
-		present_time : datetime
+		current_time : datetime, optional
 			The current time that should be considered the end bound
-			(inclusive).
+			(inclusive). Defaults to datetime.now().
+		since_number_of_seconds : int, optional
+			The number of seconds into the past we should look for the
+			count (exclusive of end of range). Defaults to 10 seconds.
 
 		Returns
 		-------
 		int
 			The total count of events.
 		"""
-		now = present_time
+		now = current_time
 		past_time = now - timedelta(seconds=since_number_of_seconds)
 
 		count = 0

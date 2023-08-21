@@ -78,19 +78,20 @@ class CountersCollection(MetricsCollection):
 
 		return self.series
 
-	def total_count_since(self, since_number_of_seconds: int, until: datetime = datetime.now(), metrics_namespace: str = '') -> int:
+	def total_count_since(self, current_time: datetime = datetime.now(), since_number_of_seconds: int = 10, metrics_namespace: str = '') -> int:
 		"""
 		Find all counter series matching a specific metric namespace
 		since a specific time.
 
 		Parameters
 		----------
-		since_number_of_seconds : datetime
-			The timestamp (exclusive) to use as the lower bound when querying
-		until : datetime, optional
+		current_time : datetime, optional
 			The timestamp (inclusive) to use as the upper bound when
 			querying. Defaults to the internal clock's datetime.now()
 			when left out.
+		since_number_of_seconds : int, optional
+			The number of seconds (exclusive) to use as the lower bound
+			when querying. Defaults to 10.
 		metrics_namespace : str, optional
 			The parent namespace in which to find all metrics. Defaults
 			to all metrics when left out.
@@ -103,6 +104,6 @@ class CountersCollection(MetricsCollection):
 		count = 0
 		for series_name, series in self.series.items():
 			if series_name.find(metrics_namespace) >= 0:
-				count += series.total_count_since(since_number_of_seconds, until)
+				count += series.total_count_since(current_time, since_number_of_seconds)
 
 		return count

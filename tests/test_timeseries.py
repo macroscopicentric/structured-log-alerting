@@ -64,6 +64,6 @@ def test_counter_returns_count_since_time(sample_name, sample_labels, sample_tim
 	for timestamp in sample_timestamps:
 		counter.add_data_point(timestamp)
 
-	count = counter.total_count_since(10, current_time)
+	count = counter.total_count_since(current_time, 10)
 
 	assert count == len(sample_timestamps)

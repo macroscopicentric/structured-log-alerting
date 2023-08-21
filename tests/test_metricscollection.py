@@ -88,7 +88,7 @@ def test_counters_collection_collects_all_metrics_since_time(api_200_metric_name
 	counters_collection = CountersCollection()
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
 	counters_collection.add_or_update_series(report_200_metric_name, report_200_parsed_log)
-	count = counters_collection.total_count_since(5, datetime(2019, 2, 7, 16, 18, 59))
+	count = counters_collection.total_count_since(datetime(2019, 2, 7, 16, 18, 59), 5)
 
 	assert count == 2
 
@@ -96,7 +96,7 @@ def test_counters_collection_total_since_time_respects_metric_name_filtering(api
 	counters_collection = CountersCollection()
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
 	counters_collection.add_or_update_series(report_200_metric_name, report_200_parsed_log)
-	count = counters_collection.total_count_since(5, datetime(2019, 2, 7, 16, 18, 59), 'api')
+	count = counters_collection.total_count_since(datetime(2019, 2, 7, 16, 18, 59), 5, 'api')
 
 	assert count == 1
 
@@ -104,6 +104,6 @@ def test_counters_collection_total_since_time_respects_exclusive_lower_bound(api
 	counters_collection = CountersCollection()
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_newer_parsed_log)
-	count = counters_collection.total_count_since(1, datetime(2019, 2, 7, 16, 18, 59))
+	count = counters_collection.total_count_since(datetime(2019, 2, 7, 16, 18, 59), 1)
 
 	assert count == 1
