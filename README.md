@@ -63,5 +63,6 @@ Timestamp Data Type: [did datetimes just because it felt better, honestly? could
 
 - [ ] allow for use of asyncio or something similar to read active log files
 - [ ] make the parsing more robust and potentially less tied to the existing example log file format
+- [ ] allow more flexible interval granularity
 - [ ] make the querying more robust and allow querying by label
 - [ ] mypy not passing
