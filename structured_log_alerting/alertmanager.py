@@ -12,13 +12,16 @@ class AlertManager:
     Attributes
     ----------
     counters_collection : CountersCollection
-            the full counter metrics to track and summarize
-    elevated_request_threshold : int, optional
-            At what number of requests (averaged) should AM start alerting.
-            Defaults to 10.
+            The full counter metrics to track and summarize.
     interesting_counters : list of str, optional
             Substrings or full names of counters to track and report on
             when summarizing recent request patterns.
+    rolling_alert_window : int, optional
+            The alert window size (in seconds) we should use for checking
+            whether a metric should alert. Defaults to 120.
+    elevated_request_threshold : int, optional
+            At what number of requests (averaged) should AM start alerting.
+            Defaults to 10.
 
     Notes
     -----
@@ -43,11 +46,30 @@ class AlertManager:
         self,
         counters_collection: CountersCollection,
         interesting_counter_names: list[str] = [],
+        rolling_alert_window: int = 120,
         elevated_request_threshold: int = 10,
     ) -> None:
         self.counters_collection = counters_collection
         self.interesting_counters = interesting_counter_names
+        self.rolling_alert_window = rolling_alert_window
         self.elevated_request_threshold = elevated_request_threshold
+        self.currently_elevated: bool = False
+
+    def format_timestamp_for_printing(self, timestamp: datetime) -> str:
+        """
+        A small helper method for formatting the timestamp for summary statements.
+
+        Parameters
+        ----------
+        timestamp : datetime
+                The timestamp to format.
+
+        Returns
+        -------
+        str
+                The timestamp as an ISO 8601-formatted string.
+        """
+        return timestamp.isoformat(" ", "seconds")
 
     def find_highest_count(
         self,
@@ -69,8 +91,8 @@ class AlertManager:
                 of the right end) to provide a summary for. Defaults to 10.
         metric_names : list of str, optional
                 The list of strings with which to query metric names.
-                Optional, defaults to an empty list, which will the attached
-                CountersCollections' list of top-level API sections.
+                Optional, defaults to an empty list, which will use the
+                attached CountersCollections' list of top-level API sections.
 
         Returns
         -------
@@ -153,9 +175,10 @@ class AlertManager:
                 count = self.counters_collection.total_count_since(
                     current_time, since_interval_in_seconds, metric
                 )
-                summary_statements.append(
-                    f"There have been {count} counts of a {metric} in the last {since_interval_in_seconds} seconds."
-                )
+                if count > 0:
+                    summary_statements.append(
+                        f"There have been {count} counts of a {metric} in the last {since_interval_in_seconds} seconds."
+                    )
 
         except ValueError as e:
             summary_statements.append(
@@ -168,6 +191,48 @@ class AlertManager:
             )
 
         return summary_statements
+
+    def find_average_request_count_per_second(
+        self,
+        current_time: datetime = datetime.now(),
+        since_interval_in_seconds: int = 10,
+        metric_names: list[str] = [],
+    ) -> float:
+        """
+        Find the average rps over a period of time for a specific metric.
+
+        Parameters
+        ----------
+        current_time : datetime, optional
+                The timestamp we should treat as the present. Defaults to
+                datetime.now()
+        since_interval_in_seconds : int, optional
+                The interval in seconds (exclusive of the left end, inclusive
+                of the right end) to provide a summary for. Defaults to 10.
+        metric_names : list of str, optional
+                The list of strings with which to query metric names.
+                Optional, defaults to an empty list, which will fetch the
+                average for all metrics.
+
+        Returns
+        -------
+        float
+                The average rps over the given interval for the given metrics.
+        """
+        total_count: int = 0
+        metric_names_to_check: list[str] = []
+
+        if len(metric_names) > 0:
+            metric_names_to_check = metric_names
+        else:
+            metric_names_to_check = self.counters_collection.sections
+
+        for metric in metric_names_to_check:
+            total_count += self.counters_collection.total_count_since(
+                current_time, since_interval_in_seconds, metric
+            )
+
+        return total_count / since_interval_in_seconds
 
     def provide_summary_for_interval(
         self,
@@ -208,9 +273,8 @@ class AlertManager:
         """
         summary_statements: list[str] = []
 
-        formatted_timestamp_for_printing = current_time.isoformat(" ", "seconds")
         summary_statements.append(
-            f"Current time interval: {formatted_timestamp_for_printing}"
+            f"Current time interval: {self.format_timestamp_for_printing(current_time)}"
         )
 
         summary_statements.append(
@@ -227,8 +291,10 @@ class AlertManager:
         return summary_statements
 
     def check_for_elevated_requests(
-        self, since_interval_in_seconds: int = 120
-    ) -> list[str]:
+        self,
+        current_time: datetime = datetime.now(),
+        since_interval_in_seconds: int | None = None,
+    ) -> str:
         """
         Check across all request counter metrics whether average
         requests has been elevated above the instance's request
@@ -236,14 +302,37 @@ class AlertManager:
 
         Parameters
         ----------
+        current_time : datetime, optional
+                The timestamp we should treat as the present. Defaults to
+                datetime.now()
         since_interval_in_seconds : int, optional
                 The interval in seconds (exclusive of the left end, inclusive
-                of the right end) to provide a summary for. Defaults to 10.
+                of the right end) to provide a summary for. If not included,
+                the method will use self.rolling_alert_window instead.
 
         Returns
         -------
-        list of str
-                The collection of sentences about the summarized output, to
-                be printed by the main body of the program.
+        str
+                Either an empty string or a sentence of summarized output
+                about the state of elevated requests, to be printed by the
+                main body of the program.
         """
-        pass
+        summary: str = ""
+
+        if since_interval_in_seconds == None:
+            since_interval_in_seconds = self.rolling_alert_window
+
+        current_request_count = self.find_average_request_count_per_second(
+            current_time, since_interval_in_seconds
+        )
+
+        if self.currently_elevated:
+            if current_request_count < self.elevated_request_threshold:
+                self.currently_elevated = False
+                summary = f"{self.format_timestamp_for_printing(current_time)}: Traffic is no longer elevated."
+        else:
+            if current_request_count >= self.elevated_request_threshold:
+                self.currently_elevated = True
+                summary = f"{self.format_timestamp_for_printing(current_time)}: High traffic generated an alert - hits = {round(current_request_count, 2)} per second"
+
+        return summary
