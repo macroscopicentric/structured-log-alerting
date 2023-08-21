@@ -16,7 +16,7 @@ class SortedOrderedDict(OrderedDict):
     """
 
     def __init__(self, max_len: int, /, *args, **kwargs) -> None:
-        # TODO: it might be nice if this class supported descending
+        # it might be nice if this class supported descending
         # order as an alternative, but I don't need it for this work
         # so I'm going to skip implementing it for now.
         self.max_len = max_len
