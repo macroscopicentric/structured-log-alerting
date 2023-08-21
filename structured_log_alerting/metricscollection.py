@@ -1,25 +1,32 @@
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 from structured_log_alerting.timeseries import CounterSeries
 
 
-class MetricsCollection:
+class MetricsCollection(ABC):
     """
-    Keep track of all metrics series, which allows queries and
-    aggregations across multiple/all series.
+    Generic metrics collection class, used to subclass specific types of metrics.
+
+    Attributes
+    ----------
+    max_series_length : int
+        The allowed upper length on each individual series stored in this
+        collection.
+    sections : list of str
+        The main API sections being tracked with metrics.
 
     Notes
     -----
-    This is, for all intents and purposes, the equivalent to a(n
-    in-memory) TSDB in this project. This is deliberately not an
-    Abstract Base Class because we should be able to collect and track
-    all kinds of metrics together, but will not be used in this toy
-    project as-is because we currently only have counters.
+    Like TimeSeries and CounterSeries, we won't use MetricsCollection for anything
+    more than a parent ABC for our counters collection. But in theory this would be
+    extendable if we did end up with other kinds of metrics.
     """
 
-    def __init__(self) -> None:
+    @abstractmethod
+    def __init__(self, max_series_length: int = 100) -> None:
+        self.max_series_length = max_series_length
         self.sections: list[str] = []
-        self.counters_collection = CountersCollection()
 
 
 class CountersCollection(MetricsCollection):
@@ -29,8 +36,8 @@ class CountersCollection(MetricsCollection):
     necessarily make sense for other types of metrics.
     """
 
-    def __init__(self) -> None:
-        self.sections = []
+    def __init__(self, *args) -> None:
+        super().__init__(*args)
         self.series: dict[str, CounterSeries] = {}
 
     def _add_series(
@@ -59,10 +66,7 @@ class CountersCollection(MetricsCollection):
         for label in valid_labels:
             labels[label] = parsed_log_file[label]
 
-        # TODO: not currently passing a max_length through here so as
-        # of right now there's no way to control the length of a
-        # CounterSeries straightforwardly.
-        new_counter = CounterSeries(counter_name, labels)
+        new_counter = CounterSeries(counter_name, labels, self.max_series_length)
         self.series[counter_name] = new_counter
         if parsed_log_file["section"] not in self.sections:
             self.sections.append(parsed_log_file["section"])
