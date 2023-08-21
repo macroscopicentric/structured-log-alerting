@@ -1,7 +1,8 @@
 import argparse
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from structured_log_alerting.alertmanager import AlertManager
 from structured_log_alerting.metricscollection import CountersCollection
 from structured_log_alerting.parser import Parser
 
@@ -22,7 +23,11 @@ def main():
 
 		counters_collection = CountersCollection()
 		parser = Parser(reader.fieldnames)
+		interesting_counters = ['404', '500']
+		alertmanager = AlertManager(counters_collection, interesting_counters)
 		current_time = datetime.min
+		start_of_current_ten_second_interval = 0
+		ten_seconds_in_timedelta = timedelta(seconds=10)
 
 		for line in reader:
 			try:
@@ -35,12 +40,15 @@ def main():
 				if log_timestamp > current_time:
 					current_time = log_timestamp
 
-				# if something is finally greater than or equal to 10 away from current_time,
-				# do the alertmanager summaries
+				if start_of_current_ten_second_interval == 0:
+					start_of_current_ten_second_interval = current_time
 
-				# last_ten_second_count = counters_collection.total_count_since(10, current_time, '404')
-				# if last_ten_second_count > 0:
-				# 	print(f"current total 400s count in the last ten seconds: {last_ten_second_count}")
+				if start_of_current_ten_second_interval + ten_seconds_in_timedelta <= current_time:
+					summary = alertmanager.provide_summary_for_interval(current_time)
+					for line in summary:
+						print(line)
+					start_of_current_ten_second_interval = current_time
+
 			except ValueError as e:
 				print(f"Problem log line at {reader.line_num}")
 				next

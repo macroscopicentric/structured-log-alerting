@@ -16,7 +16,7 @@ class MetricsCollection():
 	project as-is because we currently only have counters.
 	"""
 	def __init__(self) -> None:
-		self.sections: set[str] = set()
+		self.sections: list[str] = []
 		self.counters_collection = CountersCollection()
 
 class CountersCollection(MetricsCollection):
@@ -26,7 +26,7 @@ class CountersCollection(MetricsCollection):
 	necessarily make sense for other types of metrics.
 	"""
 	def __init__(self) -> None:
-		self.sections = set()
+		self.sections = []
 		self.series: dict[str, CounterSeries] = {}
 
 	def _add_series(self, counter_name: str, parsed_log_file: dict) -> dict[str, CounterSeries]:
@@ -47,10 +47,13 @@ class CountersCollection(MetricsCollection):
 		for label in valid_labels:
 			labels[label] = parsed_log_file[label]
 
+		# TODO: not currently passing a max_length through here so as
+		# of right now there's no way to control the length of a
+		# CounterSeries straightforwardly.
 		new_counter = CounterSeries(counter_name, labels)
 		self.series[counter_name] = new_counter
 		if parsed_log_file['section'] not in self.sections:
-			self.sections.add(parsed_log_file['section'])
+			self.sections.append(parsed_log_file['section'])
 
 		return self.series
 

@@ -3,59 +3,6 @@ import pytest
 
 from structured_log_alerting.metricscollection import CountersCollection
 
-@pytest.fixture
-def api_200_metric_name():
-	return 'api.200'
-
-@pytest.fixture
-def api_200_parsed_log():
-	return {
-		'remotehost': '10.0.0.1',
-		'rfc931': '-',
-		'authuser': 'apache',
-		'date': datetime(2019, 2, 7, 16, 18, 58),
-		'request': 'POST /api/user HTTP/1.0',
-		'status': '200',
-		'bytes': '1307',
-		'http_verb': 'POST',
-		'section': '/api',
-		'endpoint': '/api/user'
-	}
-
-@pytest.fixture
-def api_200_newer_parsed_log():
-	return {
-		'remotehost': '10.0.0.1',
-		'rfc931': '-',
-		'authuser': 'apache',
-		'date': datetime(2019, 2, 7, 16, 18, 59),
-		'request': 'POST /api/user HTTP/1.0',
-		'status': '200',
-		'bytes': '1307',
-		'http_verb': 'POST',
-		'section': '/api',
-		'endpoint': '/api/user'
-	}
-
-@pytest.fixture
-def report_200_metric_name():
-	return 'report.200'
-
-@pytest.fixture
-def report_200_parsed_log():
-	return {
-		'remotehost': '10.0.0.1',
-		'rfc931': '-',
-		'authuser': 'apache',
-		'date': datetime(2019, 2, 7, 16, 18, 58),
-		'request': 'POST /report HTTP/1.0',
-		'status': '200',
-		'bytes': '1307',
-		'http_verb': 'POST',
-		'section': '/report',
-		'endpoint': '/report'
-	}
-
 def test_counters_collection_adds_new_series(api_200_metric_name, api_200_parsed_log):
 	counters_collection = CountersCollection()
 	counters_collection.add_or_update_series(api_200_metric_name, api_200_parsed_log)
