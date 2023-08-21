@@ -61,34 +61,31 @@ def test_parser_parses_correctly(correctly_formatted_log_line):
 	assert metric_name.count('.') > 0
 	assert type(parsed_log_line) == dict
 
-def test_parser_parses_request_field_and_adds_extra_fields(correctly_formatted_log_line):
+def test_parser_parses_request_correctly(correctly_formatted_log_line):
 	parser = Parser(list(correctly_formatted_log_line))
-	metric_name, parsed_log_line = parser.parse_log_line(correctly_formatted_log_line)
+	parsed_request = parser.parse_request(correctly_formatted_log_line)
 
-	assert 'http_verb' in parsed_log_line
-	assert parsed_log_line['http_verb'] == 'POST'
-	assert 'section' in parsed_log_line
-	assert parsed_log_line['section'] == '/api'
-	assert 'endpoint' in parsed_log_line
-	assert parsed_log_line['endpoint'] == '/api/user'
+	assert 'http_verb' in parsed_request._fields and parsed_request.http_verb == 'POST'
+	assert 'section' in parsed_request._fields and parsed_request.section == 'api'
+	assert 'endpoint' in parsed_request._fields and parsed_request.endpoint == '/api/user'
+	assert 'http_version' in parsed_request._fields and parsed_request.http_version == 'HTTP/1.0'
 
-# TODO: FIX THESE TESTS
-# def test_too_long_timestamp_handles_oserror(capsys, sample_name, sample_labels):
-# 	invalid_timestamp = 1111111111111111111
-# 	counter = CounterSeries(sample_name, sample_labels)
-# 	counter.add_data_point(invalid_timestamp)
-# 	out, err = capsys.readouterr()
+def test_too_long_timestamp_handles_oserror(capsys, correctly_formatted_log_line):
+	invalid_timestamp = "1111111111111111111"
+	correctly_formatted_log_line['date'] = invalid_timestamp
+	parser = Parser(list(correctly_formatted_log_line))
+	timestamp = parser.parse_timestamp(correctly_formatted_log_line)
+	out, err = capsys.readouterr()
 
-# 	assert out == f"Invalid timestamp, failed to add data point: {invalid_timestamp}\n"
-# 	assert len(counter.data_points) == 0
+	assert out == f"Invalid timestamp, failed to parse: {invalid_timestamp}\n"
+	assert timestamp == None
 
-# def test_invalid_timestamp_handles_valueerror(capsys, sample_name, sample_labels):
-# 	invalid_timestamp = 33333333333333333
-# 	counter = CounterSeries(sample_name, sample_labels)
-# 	counter.add_data_point(invalid_timestamp)
-# 	out, err = capsys.readouterr()
+def test_invalid_timestamp_handles_valueerror(capsys, correctly_formatted_log_line):
+	invalid_timestamp = "33333333333333333"
+	correctly_formatted_log_line['date'] = invalid_timestamp
+	parser = Parser(list(correctly_formatted_log_line))
+	timestamp = parser.parse_timestamp(correctly_formatted_log_line)
+	out, err = capsys.readouterr()
 
-# 	assert out == f"Invalid timestamp, failed to add data point: {invalid_timestamp}\n"
-# 	assert len(counter.data_points) == 0
-
-
+	assert out == f"Invalid timestamp, failed to parse: {invalid_timestamp}\n"
+	assert timestamp == None
