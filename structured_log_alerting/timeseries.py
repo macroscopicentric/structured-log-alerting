@@ -26,8 +26,9 @@ class TimeSeries(ABC):
     def __init__(self, name: str, labels: dict, max_length: int = 10) -> None:
         self.name = name
         self.labels = labels
+        self.max_length = max_length
 
-        self.data_points: SortedOrderedDict[datetime, int] = SortedOrderedDict(
+        self.data_points: SortedOrderedDict = SortedOrderedDict(
             max_length
         )
 
@@ -46,11 +47,8 @@ class CounterSeries(TimeSeries):
 
     kind = "counter"
 
-    def __init__(self, name: str, labels: dict, max_length: int = 100) -> None:
-        self.name = name
-        self.max_length = max_length
-        self.labels = labels
-        self.data_points = SortedOrderedDict(max_length)
+    def __init__(self, *args) -> None:
+        super().__init__(*args)
 
     def add_data_point(self, timestamp: datetime, count: int = 1) -> SortedOrderedDict:
         """
