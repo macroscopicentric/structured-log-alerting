@@ -1,0 +1,187 @@
+Current time interval: 2019-02-07 16:11:10
+The section with the most requests (47) in the last ten seconds was: api
+There have been 10 counts of a 404 in the last 10 seconds.
+There have been 3 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:11:20
+The section with the most requests (49) in the last ten seconds was: api
+There have been 7 counts of a 404 in the last 10 seconds.
+There have been 5 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:11:30
+The section with the most requests (57) in the last ten seconds was: api
+There have been 12 counts of a 404 in the last 10 seconds.
+There have been 7 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:11:40
+The section with the most requests (55) in the last ten seconds was: api
+There have been 18 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:11:50
+The section with the most requests (53) in the last ten seconds was: api
+There have been 5 counts of a 404 in the last 10 seconds.
+There have been 7 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:12:00
+The section with the most requests (52) in the last ten seconds was: api
+There have been 6 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:12:10
+The section with the most requests (122) in the last ten seconds was: api
+There have been 19 counts of a 404 in the last 10 seconds.
+There have been 19 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:12:20
+The section with the most requests (124) in the last ten seconds was: api
+There have been 8 counts of a 404 in the last 10 seconds.
+There have been 17 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:12:30
+The section with the most requests (123) in the last ten seconds was: api
+There have been 15 counts of a 404 in the last 10 seconds.
+There have been 21 counts of a 500 in the last 10 seconds.
+2019-02-07 16:12:38: High traffic generated an alert - hits = 10.09 per second
+Current time interval: 2019-02-07 16:12:40
+The section with the most requests (133) in the last ten seconds was: api
+There have been 25 counts of a 404 in the last 10 seconds.
+There have been 15 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:12:50
+The section with the most requests (120) in the last ten seconds was: api
+There have been 9 counts of a 404 in the last 10 seconds.
+There have been 21 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:13:00
+The section with the most requests (133) in the last ten seconds was: api
+There have been 13 counts of a 404 in the last 10 seconds.
+There have been 23 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:13:10
+The section with the most requests (19) in the last ten seconds was: api
+There have been 5 counts of a 404 in the last 10 seconds.
+There have been 1 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:13:20
+The section with the most requests (19) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+There have been 1 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:13:30
+The section with the most requests (19) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+Current time interval: 2019-02-07 16:13:40
+The section with the most requests (18) in the last ten seconds was: api
+There have been 5 counts of a 404 in the last 10 seconds.
+2019-02-07 16:13:50: Traffic is no longer elevated.
+Current time interval: 2019-02-07 16:13:50
+The section with the most requests (20) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:00
+The section with the most requests (18) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:10
+The section with the most requests (17) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 3 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:20
+The section with the most requests (16) in the last ten seconds was: api
+There have been 5 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:30
+The section with the most requests (20) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+There have been 5 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:40
+The section with the most requests (19) in the last ten seconds was: api
+There have been 1 counts of a 404 in the last 10 seconds.
+There have been 2 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:14:50
+The section with the most requests (19) in the last ten seconds was: api
+There have been 4 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:00
+The section with the most requests (20) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 2 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:10
+The section with the most requests (20) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+There have been 1 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:20
+The section with the most requests (18) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 1 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:30
+The section with the most requests (20) in the last ten seconds was: api
+There have been 3 counts of a 404 in the last 10 seconds.
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:40
+The section with the most requests (205) in the last ten seconds was: api
+There have been 24 counts of a 404 in the last 10 seconds.
+There have been 27 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:15:50
+The section with the most requests (204) in the last ten seconds was: api
+There have been 19 counts of a 404 in the last 10 seconds.
+There have been 26 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:16:00
+The section with the most requests (205) in the last ten seconds was: api
+There have been 22 counts of a 404 in the last 10 seconds.
+There have been 22 counts of a 500 in the last 10 seconds.
+2019-02-07 16:16:06: High traffic generated an alert - hits = 10.08 per second
+Current time interval: 2019-02-07 16:16:10
+The section with the most requests (204) in the last ten seconds was: api
+There have been 19 counts of a 404 in the last 10 seconds.
+There have been 24 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:16:20
+The section with the most requests (205) in the last ten seconds was: api
+There have been 27 counts of a 404 in the last 10 seconds.
+There have been 27 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:16:30
+The section with the most requests (203) in the last ten seconds was: api
+There have been 20 counts of a 404 in the last 10 seconds.
+There have been 23 counts of a 500 in the last 10 seconds.
+Malformed log line, skipping: {'remotehost': '10.0.0.5', 'rfc931': '-', 'authuser': '', 'date': None, 'request': None, 'status': None, 'bytes': None}
+Problem log line at 3806
+Malformed log line, skipping: {'remotehost': 'apache', 'rfc931': '1549574191', 'authuser': 'GET /report HTTP/1.0', 'date': '200', 'request': '1234', 'status': None, 'bytes': None}
+Problem log line at 3807
+Current time interval: 2019-02-07 16:16:40
+The section with the most requests (208) in the last ten seconds was: api
+There have been 15 counts of a 404 in the last 10 seconds.
+There have been 16 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:16:50
+The section with the most requests (226) in the last ten seconds was: api
+There have been 20 counts of a 404 in the last 10 seconds.
+There have been 28 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:00
+The section with the most requests (203) in the last ten seconds was: api
+There have been 24 counts of a 404 in the last 10 seconds.
+There have been 15 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:11
+The section with the most requests (10) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:21
+The section with the most requests (10) in the last ten seconds was: api
+There have been 3 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:31
+The section with the most requests (9) in the last ten seconds was: report
+There have been 4 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:41
+The section with the most requests (11) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 2 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:17:51
+The section with the most requests (10) in the last ten seconds was: api
+There have been 5 counts of a 404 in the last 10 seconds.
+There have been 2 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:18:01
+The section with the most requests (10) in the last ten seconds was: api
+There have been 4 counts of a 404 in the last 10 seconds.
+There have been 3 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:18:11
+The section with the most requests (9) in the last ten seconds was: api
+There have been 1 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:18:21
+The section with the most requests (9) in the last ten seconds was: report
+There have been 2 counts of a 500 in the last 10 seconds.
+2019-02-07 16:18:22: Traffic is no longer elevated.
+Current time interval: 2019-02-07 16:18:31
+The section with the most requests (8) in the last ten seconds was: api
+There have been 2 counts of a 404 in the last 10 seconds.
+There have been 3 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:18:41
+The section with the most requests (10) in the last ten seconds was: api
+There have been 2 counts of a 500 in the last 10 seconds.
+Current time interval: 2019-02-07 16:18:52
+The section with the most requests (9) in the last ten seconds was: api
+There have been 1 counts of a 404 in the last 10 seconds.
+There have been 5 counts of a 500 in the last 10 seconds.
