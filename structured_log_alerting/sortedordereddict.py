@@ -44,7 +44,7 @@ class SortedOrderedDict(OrderedDict):
                 out_of_order_kv_pairs.appendleft(key_value_pair)
 
         super().__setitem__(key, value)
-        self.update(out_of_order_kv_pairs)
+        self.update(cast(Iterable[tuple[Any, Any]], out_of_order_kv_pairs))
 
         if len(self) > self.max_len:
             self.popitem(False)

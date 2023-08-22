@@ -45,14 +45,18 @@ class AlertManager:
     def __init__(
         self,
         counters_collection: CountersCollection,
-        interesting_counter_names: list[str] = [],
+        interesting_counter_names: list[str] | None = None,
         rolling_alert_window: int = 120,
         elevated_request_threshold: int = 10,
     ) -> None:
         self.counters_collection = counters_collection
-        self.interesting_counters = interesting_counter_names
         self.rolling_alert_window = rolling_alert_window
         self.elevated_request_threshold = elevated_request_threshold
+
+        if interesting_counter_names:
+            self.interesting_counters = interesting_counter_names
+        else:
+            self.interesting_counters = []
         self.currently_elevated: bool = False
 
     def format_timestamp_for_printing(self, timestamp: datetime) -> str:
@@ -152,10 +156,10 @@ class AlertManager:
                 The collection of sentences about the summarized output, to
                 be printed by the main body of the program.
         """
-        try:
-            summary_statements: list[str] = []
-            metric_names_to_check: list[str] = []
+        summary_statements: list[str] = []
+        metric_names_to_check: list[str] = []
 
+        try:
             if len(metric_names) > 0:
                 metric_names_to_check = metric_names
             elif len(self.interesting_counters) > 0:
@@ -180,7 +184,7 @@ class AlertManager:
                         f"There have been {count} counts of a {metric} in the last {since_interval_in_seconds} seconds."
                     )
 
-        except ValueError as e:
+        except ValueError:
             summary_statements.append(
                 """
 				Error: No metric_names passed in and no interesting_counters used
@@ -319,7 +323,7 @@ class AlertManager:
         """
         summary: str = ""
 
-        if since_interval_in_seconds == None:
+        if since_interval_in_seconds:
             since_interval_in_seconds = self.rolling_alert_window
 
         current_request_count = self.find_average_request_count_per_second(

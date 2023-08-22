@@ -68,7 +68,7 @@ class Parser:
         # we'd end up with a properly formed line at the end of an
         # aggregation attempt. improperly formatted lines can manifest in a
         # variety of ways, and definitely in these two errors.
-        except (AttributeError, ValueError) as e:
+        except (AttributeError, ValueError):
             print(f"Malformed log line, skipping: {log_line}")
             raise ValueError
 
@@ -125,6 +125,6 @@ class Parser:
         # replicate these two specific errors via the python repl).
         # this will also catch a string timestamp that cannot be turned
         # into an int (which is a ValueError).
-        except (OSError, ValueError) as e:
+        except (OSError, ValueError):
             print(f"Invalid timestamp, failed to parse: {timestamp}")
             return None

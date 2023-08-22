@@ -93,7 +93,7 @@ def test_too_long_timestamp_handles_oserror(capsys, correctly_formatted_log_line
     out, err = capsys.readouterr()
 
     assert out == f"Invalid timestamp, failed to parse: {invalid_timestamp}\n"
-    assert timestamp == None
+    assert timestamp is None
 
 
 def test_invalid_timestamp_handles_valueerror(capsys, correctly_formatted_log_line):
@@ -104,4 +104,4 @@ def test_invalid_timestamp_handles_valueerror(capsys, correctly_formatted_log_li
     out, err = capsys.readouterr()
 
     assert out == f"Invalid timestamp, failed to parse: {invalid_timestamp}\n"
-    assert timestamp == None
+    assert timestamp is None

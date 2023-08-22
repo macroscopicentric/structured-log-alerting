@@ -73,7 +73,6 @@ def main():
 
             except ValueError as e:
                 print(f"Problem log line at {reader.line_num}")
-                next
 
 
 if __name__ == "__main__":

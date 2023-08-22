@@ -36,8 +36,8 @@ class CountersCollection(MetricsCollection):
     necessarily make sense for other types of metrics.
     """
 
-    def __init__(self, *args) -> None:
-        super().__init__(*args)
+    def __init__(self, max_series_length: int = 100) -> None:
+        super().__init__(max_series_length)
         self.series: dict[str, CounterSeries] = {}
 
     def _add_series(

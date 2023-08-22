@@ -12,7 +12,7 @@ poetry install
 
 ## Usage
 
-To run the program, you must hand it a log file as a CLI argument. The program expects the log file to be in a strict CSV format with specific fields a la (a preformatted) nginx's access logs. `example_log.csv` is stored in this repo as an example of the expected format and fields.
+To run the program, you must hand it a log file as a CLI argument. The program expects the log file to be in a strict CSV format with specific fields a la (a preformatted) nginx's access logs. `example_log.csv` is stored in this repo as an example of the expected format and fields. If you've received a zipped copy of the entire project, there will be a second file called `log.csv` that you'll want to use to fully test the code.
 
 To invoke the program:
 ```sh
