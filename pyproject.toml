@@ -1,7 +1,7 @@
 # poetry
 [tool.poetry]
 name = "structured-log-alerting"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Rachel King <rachel.b.king@gmail.com>"]
 readme = "README.md"
