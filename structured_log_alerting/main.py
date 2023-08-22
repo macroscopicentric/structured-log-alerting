@@ -51,25 +51,25 @@ def main():
                     if len(alert_message) > 0:
                         print(alert_message)
 
-                # all of this timekeeping is clumsy but also feels good
-                # enough. i think my next step would be something like a
-                # pointer or two stored on disk if/when we started treating
-                # this like a proper tsdb that stored other things on disk.
-                # a persistent pointer also starts to feel like yet another
-                # place where we actually have a producer/consumer model
-                # like a queue.
-                if start_of_current_ten_second_interval == 0:
-                    start_of_current_ten_second_interval = current_time
+                    # all of this timekeeping is clumsy but also feels good
+                    # enough. i think my next step would be something like a
+                    # pointer or two stored on disk if/when we started treating
+                    # this like a proper tsdb that stored other things on disk.
+                    # a persistent pointer also starts to feel like yet another
+                    # place where we actually have a producer/consumer model
+                    # like a queue.
+                    if start_of_current_ten_second_interval == 0:
+                        start_of_current_ten_second_interval = current_time
 
-                if (
-                    start_of_current_ten_second_interval + ten_seconds_in_timedelta
-                    <= current_time
-                ):
-                    # if it's been 10+ seconds since our last summary:
-                    summary = alertmanager.provide_summary_for_interval(current_time)
-                    for line in summary:
-                        print(line)
-                    start_of_current_ten_second_interval = current_time
+                    if (
+                        start_of_current_ten_second_interval + ten_seconds_in_timedelta
+                        <= current_time
+                    ):
+                        # if it's been 10+ seconds since our last summary:
+                        summary = alertmanager.provide_summary_for_interval(current_time)
+                        for line in summary:
+                            print(line)
+                        start_of_current_ten_second_interval = current_time
 
             except ValueError as e:
                 print(f"Problem log line at {reader.line_num}")
